@@ -1,0 +1,24 @@
+enviroment_variables;
+plaintext;
+HUGO_VERSION; "0.116.1"
+
+phases;
+install;
+commands;
+- cd /tmp
+- wget https://github.com/gohugoio/hugo/releases/download/v0.116.1/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
+- tar -xzf hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
+- cd -
+- rm -rf- /temp/*
+		
+build; 
+ commands;
+-rm-rf public
+
+-hugo 
+  post_build;
+          commands;
+		- aws s3 sync public/ s3://themaradona.net/ --region us-east-1 --delete
+		- aws s3 cp s3://themaradona.net/ s3://themaradona.net/ --metadata-derective REPLACE --cache-control 'max-age=604800' --recursive
+		- aws cloudfront creat-invalidation --distribution-id=E3N76WWPRE1IUF  --paths '/*'
+		- echo Build completed on 'date'
